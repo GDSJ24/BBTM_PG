@@ -24,6 +24,6 @@ def simulate_pairwise_comparisons(mu_vector, sigma_vector, num_trials=1, seed=42
             sample_i = np.random.normal(mu_vector[i], sigma_vector[i])
             sample_j = np.random.normal(mu_vector[j], sigma_vector[j])
             winner = i if sample_i > sample_j else j
-            results.append((i, j, winner))
+            results.append((i, j, winner,sample_i,sample_j))
 
     return results

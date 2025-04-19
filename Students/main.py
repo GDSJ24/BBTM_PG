@@ -9,8 +9,10 @@ def main():
 
     print("Pairwise Comparison Results in [i,j, winner]:")
 
-    for i, j, winner in results:
+    for i, j, winner,sample_i, sample_j in results:
         print([i,j,winner])
+        print(f"[{sample_i:.3f}, {sample_j:.3f}]")
+        
 
 if __name__ == "__main__":
     main()
