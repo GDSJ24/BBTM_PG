@@ -30,10 +30,6 @@ comparisons = [[i,j, winner]]
 
 Each row corresponds to a comparison and encodes `+1` for the winner and `-1` for the loser.
 
-### Response Vector
-
-All ones (`y = 1`) since the first individual in each comparison always wins.
-
 ---
 
 ## 3. Gibbs Sampling Algorithm
