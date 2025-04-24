@@ -53,7 +53,7 @@ class ComparisonGenerator:
 
 # Design matrix
 def build_design_matrix(comparisons: List[List[int]], n_students: int) -> sp.csr_matrix:
-    """Original function from your codebase"""
+    """Design matrix for comparisons"""
     n = len(comparisons)
     X = sp.lil_matrix((n, n_students))
     for idx, (i, j, k, *rest) in enumerate(comparisons):  # Ignore extra fields
@@ -63,5 +63,5 @@ def build_design_matrix(comparisons: List[List[int]], n_students: int) -> sp.csr
     return X.tocsr()
 
 def get_student_pairs(n_students: int) -> List[Tuple[int, int]]:
-    """Original function from your codebase"""
+    """Student pairs for comparisons"""
     return [(i, j) for i in range(n_students) for j in range(i+1, n_students)]
