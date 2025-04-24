@@ -36,10 +36,10 @@ Each row corresponds to a comparison and encodes `+1` for the winner and `-1` fo
 
 ### Steps
 
-**Initialize Parameters:**
+**Initial Parameters:**
 
 ```python
-theta = [0, 0, 0, 0, 0]  # latent strengths
+theta = [0, 0, ..., 0]  # latent strengths
 omega = [1, 1, ..., 1]   # PG variables
 ```
 
