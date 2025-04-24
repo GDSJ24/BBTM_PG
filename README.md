@@ -7,7 +7,7 @@
 For a comparison between individuals *i* and *j* where *i* wins, the probability is:
 
 ```math
-P(i \text{ beats } j) = \frac{e^{\theta_i}}{e^{\theta_i} + e^{\theta_j}} = \sigma(\theta_i - \theta_j)
+P(i \succ j) = \frac{e^{\theta_i}}{e^{\theta_i} + e^{\theta_j}} = \sigma(\theta_i - \theta_j)
 ```
 
 where $\sigma$ is the logistic function, and $\theta_i$ is the latent strength of individual *i*.
