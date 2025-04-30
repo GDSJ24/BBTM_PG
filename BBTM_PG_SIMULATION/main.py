@@ -6,8 +6,124 @@ from gibbs_sampling import gibbs_sampler_binomial, gibbs_sampler_binomial_single
 from metrics import compute_expected_metrics
 from ranking import determine_winner
 from simulation import print_metrics, print_simulation_results
+import sys
 
-def main():
+
+# try: 
+from pbcj import *
+# except:
+#     from .pbcj import *
+
+from pypolyagamma import PyPolyaGamma
+
+"""
+
+GOAL: script for running 1 simulated experiment -- we aim to run many in parallel
+
+simulation variations. 
+
+- method: BBTM, PBCJ
+- N: number of students/items
+- K: number of comparisons/items
+- selection method: random, entropy, KG, round robin
+- seed: default 1234
+    - for mu and sigma vectors, we will generate them randomly based on seed
+    - it can work as an ID, and be potentially used for matched experiment/sampling/runs across methods
+
+Things to save. (JSON files -- be careful of naming convention)
+
+- mu/sigma vectors (not that important)
+- expected target ranks (based on the mu ans sigma) - T
+- target rank density (based on the mu and sigma) - R
+- outcomes, where each row is formatted in (item index i, item index j, winner) in a 2-D array
+- Estimated expected ranks - t
+- Estimated rank densities - r
+- history of expected tau ranks (T, t)
+- history of expected spearman rho (T, t)
+- history of density of JSD scores across all items (R, r) -- i th row is N JSD scores after i  comparisons. 
+
+
+"""
+
+def run_pbcj(N, K, selection_method, seed):
+    # generate mus and sigmas
+    # self, n_students: int, mu_vector: List[float], sigma_vector: List[float], seed: int = 2013):
+    loc_mus, loc_sigmas = generate_mus_sigmas(N, seed)
+    # set priors
+    alpha_init = np.ones((N, N)) # prior
+    beta_init = np.ones((N, N)) # prior
+    # initialise matrix for wins
+    wins = np.zeros((N, N))
+    # initialise matrix for losses
+    losses = np.zeros((N, N))
+    # initialise rank density matrix
+    rank_density = np.ones((N, N))/N # prior
+    # initialise expected rank list
+    exp_rank = pbcj_cal_exp_ranks(rank_density)
+    # calculate current entropy matrix
+    entropy = pbcj_calc_entropy(wins, losses, alpha_init, beta_init)
+    # object for comparisons
+    comp = ComparisonGenerator(N, loc_mus, loc_sigmas, seed=seed) 
+    exp_hist = []
+    for i in range(N*K):
+        # pick item indices
+        ind_1, ind_2 = pbcj_select_item_indices(wins, losses, alpha_init, beta_init, method=selection_method)
+        print(ind_1, ind_2)
+        # compare and get result -- update win/loss matrices
+        win = comp.generate_winner_01(ind_1, ind_2)
+        print(win)
+        wins[ind_1, ind_2] += win
+        wins[ind_2, ind_1] += (1-win)
+        losses[ind_1, ind_2] += (1 - win)
+        losses[ind_2, ind_1] += win
+        # update entropy
+        entropy = pbcj_calc_entropy(wins, losses, alpha_init, beta_init)
+        # update exp rank
+        exp_rank = pbcj_MC_exp_rank(wins, losses, alpha_init, beta_init)
+        exp_hist.append(exp_rank)
+    return np.array(exp_hist), wins, losses
+
+def main_new():
+
+    if '-seed' in sys.argv:
+        seed = int(sys.argv[sys.argv.index('-seed')+1])
+    else:
+        seed = 12345
+
+    if '-m' in sys.argv: # string
+        method = sys.argv[sys.argv.index('-m')+1]
+    else:
+        method = "PBCJ"
+
+    if '-n' in sys.argv: # int
+        N = int(sys.argv[sys.argv.index('-n')+1])
+    else:
+        N = 5
+
+    if '-k' in sys.argv:
+        K = int(sys.argv[sys.argv.index('-k')+1])
+    else:
+        K = 5
+
+    if '-sel' in sys.argv: # string: 
+        sel = sys.argv[sys.argv.index('-sel')+1]
+    else:
+        sel = "random"
+    
+    print("Simulation settings:")
+    print(seed, method, N, K, sel)
+
+
+    # Run PBCJ
+    if method=="PBCJ":
+        res = run_pbcj(N, K, sel, seed)
+        print(res[0])
+        print(res[1])
+        print(res[2])
+
+
+def main_old():
+
     # Parameters
     mu_vector = [50.0, 60.0, 70.0, 55.0, 65.0]  # 5 students
     sigma_vector = [5.0, 5.0, 5.0, 5.0, 5.0]
@@ -93,4 +209,4 @@ def main():
     )
 
 if __name__ == "__main__":
-    main()
+    main_new()
