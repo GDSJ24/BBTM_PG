@@ -66,5 +66,6 @@ def pbcj_select_item_indices(wins, losses, alpha_init, beta_init, method="random
         return ind_1, ind_2
     if method == "entropy":
         ent = pbcj_calc_entropy(wins, losses, alpha_init, beta_init)
+        np.fill_diagonal(ent, -1e100)
         ind_1, ind_2 = np.unravel_index(np.argmax(ent), ent.shape)
         return ind_1, ind_2
