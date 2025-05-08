@@ -1,0 +1,2 @@
+python /scratch/s.2434489/repo/BBTM_PG/BBTM_PG_SIMULATION/main.py -m PBCJ -n 10 -k 20 -seed 126315
+python /scratch/s.2434489/repo/BBTM_PG/BBTM_PG_SIMULATION/main.py -m PBCJ -n 10 -k 20 -seed 23748627

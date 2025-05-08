@@ -27,12 +27,18 @@ class ComparisonGenerator:
         self.sigmas = np.array(sigma_vector)
 
     def generate_winner(self, i: int, j: int) -> int:
-        """Generate winner using normal distributions"""
+        """Generate winner using normal distributions -- indices in the list"""
         sample_i = np.random.normal(self.mus[i], self.sigmas[i])
         sample_j = np.random.normal(self.mus[j], self.sigmas[j])
         return i if sample_i > sample_j else j
+    
+    def generate_winner_01(self, i: int, j: int) -> int:
+        """Generate winner using normal distributions -- indices in the list"""
+        sample_i = np.random.normal(self.mus[i], self.sigmas[i])
+        sample_j = np.random.normal(self.mus[j], self.sigmas[j])
+        return 1 if sample_i > sample_j else 0
 
-    def generate_comparisons(self, n_comparisons: int) -> List[List[int]]:
+    def generate_comparisons(self, n_comparisons: int, method=None, args=None) -> List[List[int]]:
         """
         Generate comparisons in [i, j, winner] format
         Args:
@@ -42,7 +48,10 @@ class ComparisonGenerator:
         """
         comparisons = []
         for _ in range(n_comparisons):
-            i, j = random.sample(range(self.n_students), 2)
+            if method is None:
+                method = random.sample
+                args = (range(self.n_students), 2)
+            i, j = method(*args)
             winner = self.generate_winner(i, j)
             comparisons.append([i, j, winner])
         return comparisons
