@@ -5,12 +5,12 @@ from datetime import datetime
 import os
 
 def run_simulation_batch():
-    seeds = [1, 2]
+    seeds = list(range(1,41)) # Seeds from 1 to 40
     methods = ["PBCJ", "BBTM"]
-    pbcj_selections = ["random", "entropy"]
-    bbtm_selections = ["random", "round_robin"]
-    n_values = [5]
-    k_values = [5]
+    pbcj_selections = ["random", "entropy", "round_robin", "no_repeating_pairs", "KG-Tau", "KG-Rho", "KG-Entropy"] # PBCJ selections
+    bbtm_selections = ["random",  "pair_entropy", "round_robin", "no_repeating_pairs", "KG-Tau", "KG-Rho", "KG-Entropy"] # BBTM selections
+    n_values = [5, 10, 20, 30, 40, 50]  # Students/items
+    k_values = [5, 10, 20, 30, 40, 50]  # k budgets
 
     # Create output directory
     os.makedirs("output_logs", exist_ok=True)
